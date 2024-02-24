@@ -1,0 +1,49 @@
+Database Design
+
+Entities:
+- User
+- Entity (page, group, etc): entityId, name, description, timestamp
+- Post: postId, title, text, authorId, timestamp
+- Media: mediaId, url, timestamp
+
+Relationships:
+- Follower-Followee: A User can follow other Users or Entities. (m:n)
+- Author-Post: Users and Entities can generate Posts. For simplicity, assume only Users can generate Posts. (1:n; we can embed the authorId)
+- Post-Media: Each Post has some associated Medias. (1:n)
+
+
+System APIs
+
+getNewsFeed(userId, options?):
+
+- userId (GUID): the id of the user who is fetching the news feed
+- The optional options parameter can contain the following fields:
+    afterPostId (GUID): fetch the news feed from after this post. If unspecified, fetch the newest posts.
+    count (number): the maximum number of posts returned for each request. If unspecified, some default maximum number is set by the backend.
+    excludeReplies (boolean): used to prevent the news feed from containing the replies.
+The return values is a JSON containing a list of news feed items.
+
+
+
+How the system fufills the requirements:
+
+
+
+Imagine you're Sarah, scrolling through your Insta feed. What happens when you tap "Refresh"?
+
+1. We find everyone you follow, from fitness gurus to meme masters.
+2. We grab their latest pics, reels, and stories, prioritizing the good stuff.
+3. We use your likes, follows, and past viewing habits to rank them, showing the most relevant first.
+4. We save the top 20 for you to see instantly.
+5. No problem! We automatically load the next batch as you go deeper.
+
+
+Now, picture your friend David posting a hilarious meme. How does it appear on your feed?
+
+1. We identify everyone following David, including you, Sarah!
+2. We add David's meme to the feed pool for all his followers.
+3. We re-rank everyone's content, including the new meme, based on how interesting it is for you and how recent it is.
+4. We refresh the saved top posts with the new ranking.
+5. You get a notification – fresh content awaits!
+
+
